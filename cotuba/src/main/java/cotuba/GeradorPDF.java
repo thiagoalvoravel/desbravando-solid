@@ -15,17 +15,25 @@ import java.util.List;
 
 public class GeradorPDF {
 
-    public void gera(Path diretorioDosMD, Path arquivoDeSaida) {
+    public void gera(Ebook ebook) {
+        Path arquivoDeSaida = ebook.getArquivoDeSaida();
+
         try (var writer = new PdfWriter(Files.newOutputStream(arquivoDeSaida));
              var pdf = new PdfDocument(writer);
              var pdfDocument = new Document(pdf)) {
 
-                List<IElement> convertToElements = HtmlConverter.convertToElements(html);
-                for (IElement element : convertToElements) {
-                    pdfDocument.add((IBlockElement) element);
+                for(Capitulo capitulo : ebook.getCapitulos()) {
+                    String html = capitulo.getConteudoHTML();
+
+                    List<IElement> convertToElements = HtmlConverter.convertToElements(html);
+                    for (IElement element : convertToElements) {
+                        pdfDocument.add((IBlockElement) element);
+                    }
+
+                    if(!ebook.isUltimoCapitulo(capitulo)) {
+                        pdfDocument.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+                    }
                 }
-                // TODO: não adicionar página depois do último capítulo
-                pdfDocument.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 
         } catch (Exception ex) {
             throw new IllegalStateException("Erro ao criar arquivo PDF: " + arquivoDeSaida.toAbsolutePath(), ex);

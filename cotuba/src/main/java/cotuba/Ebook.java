@@ -9,6 +9,11 @@ public class Ebook {
     private Path arquivoDeSaida;
     private List<Capitulo> capitulos;
 
+    public boolean isUltimoCapitulo(Capitulo capitulo) {
+        // TODO: melhorar essa validacão
+        return this.capitulos.get(this.capitulos.size() - 1).equals(capitulo);
+    }
+
     public String getFormato() {
         return formato;
     }
