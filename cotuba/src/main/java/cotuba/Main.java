@@ -19,27 +19,9 @@ public class Main {
             formato = opcoesCLI.getFormato();
             arquivoDeSaida = opcoesCLI.getArquivoDeSaida();
             modoVerboso = opcoesCLI.isModoVerboso();
-            var renderizador = new RenderizadorMDParaHTML();
 
-            List<Capitulo> capitulos = renderizador.renderiza(diretorioDosMD);
-
-            var ebook = new Ebook();
-            ebook.setFormato(formato);
-            ebook.setCapitulos(capitulos);
-            ebook.setArquivoDeSaida(arquivoDeSaida);
-
-            if ("pdf".equals(formato)) {
-                var geradorPDF = new GeradorPDF();
-
-                geradorPDF.gera(ebook);
-
-            } else if ("epub".equals(formato)) {
-                var geradorEPUB = new GeradorEPUB();
-
-                geradorEPUB.gera(ebook);
-            } else {
-                throw new IllegalArgumentException("Formato do ebook inválido: " + formato);
-            }
+            var cotuba = new Cotuba();
+            cotuba.executa(formato, diretorioDosMD, arquivoDeSaida);
 
             System.out.println("Arquivo gerado com sucesso: " + arquivoDeSaida);
 

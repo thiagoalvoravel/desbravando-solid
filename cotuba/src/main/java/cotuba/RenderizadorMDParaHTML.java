@@ -32,6 +32,7 @@ public class RenderizadorMDParaHTML {
                         Node document = null;
                         try {
                             document = parser.parseReader(Files.newBufferedReader(arquivoMD));
+                            // TODO: refatorar responsabilidade para outra classe
                             document.accept(new AbstractVisitor() {
                                 @Override
                                 public void visit(Heading heading) {
