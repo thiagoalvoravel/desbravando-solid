@@ -15,7 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 
-public class LeitorOpcoesCLI {
+class LeitorOpcoesCLI {
 
     private Path diretorioDosMD;
     private String formato;
@@ -24,34 +24,9 @@ public class LeitorOpcoesCLI {
 
     public LeitorOpcoesCLI(String[] args) {
         try {
-            var options = new Options();
+            var options = criaOpcoes();
 
-            var opcaoDeDiretorioDosMD = new Option("d", "dir", true,
-                    "Diretório que contém os arquivos md. Default: diretório atual.");
-            options.addOption(opcaoDeDiretorioDosMD);
-
-            var opcaoDeFormatoDoEbook = new Option("f", "format", true,
-                    "Formato de saída do ebook. Pode ser: pdf ou epub. Default: pdf");
-            options.addOption(opcaoDeFormatoDoEbook);
-
-            var opcaoDeArquivoDeSaida = new Option("o", "output", true,
-                    "Arquivo de saída do ebook. Default: book.{formato}.");
-            options.addOption(opcaoDeArquivoDeSaida);
-
-            var opcaoModoVerboso = new Option("v", "verbose", false,
-                    "Habilita modo verboso.");
-            options.addOption(opcaoModoVerboso);
-
-            CommandLineParser cmdParser = new DefaultParser();
-            var ajuda = new HelpFormatter();
-            CommandLine cmd;
-
-            try {
-                cmd = cmdParser.parse(options, args);
-            } catch (ParseException e) {
-                ajuda.printHelp("cotuba", options);
-                throw new IllegalArgumentException("Opção inválida", e);
-            }
+            CommandLine cmd = parseDosArgumentos(args, options);
 
             String nomeDoDiretorioDosMD = cmd.getOptionValue("dir");
 
@@ -93,6 +68,40 @@ public class LeitorOpcoesCLI {
             throw new IllegalArgumentException(ex);
         }
 
+    }
+
+    private Options criaOpcoes() {
+        var options = new Options();
+
+        var opcaoDeDiretorioDosMD = new Option("d", "dir", true,
+                "Diretório que contém os arquivos md. Default: diretório atual.");
+        options.addOption(opcaoDeDiretorioDosMD);
+
+        var opcaoDeFormatoDoEbook = new Option("f", "format", true,
+                "Formato de saída do ebook. Pode ser: pdf ou epub. Default: pdf");
+        options.addOption(opcaoDeFormatoDoEbook);
+
+        var opcaoDeArquivoDeSaida = new Option("o", "output", true,
+                "Arquivo de saída do ebook. Default: book.{formato}.");
+        options.addOption(opcaoDeArquivoDeSaida);
+
+        var opcaoModoVerboso = new Option("v", "verbose", false,
+                "Habilita modo verboso.");
+        options.addOption(opcaoModoVerboso);
+
+        return options;
+    }
+
+    private CommandLine parseDosArgumentos(String[] args, Options options){
+        CommandLineParser cmdParser = new DefaultParser();
+        var ajuda = new HelpFormatter();
+
+        try {
+            return cmdParser.parse(options, args);
+        } catch (ParseException e) {
+            ajuda.printHelp("cotuba", options);
+            throw new IllegalArgumentException("Opção inválida", e);
+        }
     }
 
     public Path getDiretorioDosMD() {
